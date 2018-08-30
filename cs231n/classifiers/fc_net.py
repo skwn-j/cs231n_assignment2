@@ -85,10 +85,10 @@ class TwoLayerNet(object):
         # TODO: Implement the forward pass for the two-layer net, computing the    #
         # class scores for X and storing them in the scores variable.              #
         ############################################################################
-        x1 = affine_relu_forward(X, self.params.get('W1'), self.params.get('b1'))
-        l1 = relu_forward(x1)
-        x2 = affine_forward(l1, self.params.get('W2'), self.params.get('b2'))
-        scores = softmax_loss(x2, y)
+        x1, aff_cache1 = affine_forward(X, self.params.get('W1'), self.params.get('b1'))
+        h1, relu_cache = relu_forward(x1)
+        x2, aff_cache2 = affine_forward(h1, self.params.get('W2'), self.params.get('b2'))
+        scores = x2
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
@@ -108,14 +108,18 @@ class TwoLayerNet(object):
         # automated tests, make sure that your L2 regularization includes a factor #
         # of 0.5 to simplify the expression for the gradient.                      #
         ############################################################################
-        loss, dscore = softmax_loss(x2, y)
-        dx2, dw2, db2 =  affine_backward(dscore, (l1, self.params.get('W2'), self.params.get('b2')))
-        dl1 = relu_backward(dx2, x1)
-        dx1, dw1, db1 = affine_backward(dl1,  (x1, self.params.get('W1'), self.params.get('b1'))
-        grads[0] = dw1
-        grads[1] = db1
-        grads[2] = dw2
-        grads[3] = db2
+        loss, dx2 = softmax_loss(scores, y)
+        loss += 0.5 * self.reg * np.sum(self.params.get('W1')**2)
+        loss += 0.5 * self.reg * np.sum(self.params.get('W2')**2)
+        dh1, dw2, db2 =  affine_backward(dx2, aff_cache2)
+        dw2 += self.reg *self.params.get('W2')
+        dx1 = relu_backward(dh1, relu_cache)
+        dX, dw1, db1 = affine_backward(dx1, aff_cache1)
+        dw1 += self.reg *self.params.get('W1')
+        grads['W1'] = dw1
+        grads['b1'] = db1
+        grads['W2'] = dw2
+        grads['b2'] = db2
         ############################################################################
         #                             END OF YOUR CODE                             #
         ############################################################################
