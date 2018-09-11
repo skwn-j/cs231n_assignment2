@@ -191,14 +191,7 @@ def batchnorm_forward(x, gamma, beta, bn_param):
         out = x_hat * gamma + beta
         running_mean = momentum * running_mean + (1 - momentum) * sample_mean
         running_var = momentum * running_var + (1 - momentum) * sample_var
-
-        cache['sample_mean'] = sample_mean
-        cache['sample_var'] = sample_var
-        cache['out'] = out
-        cache['x'] = x
-        cache['gamma'] = gamma
-        cache['beta'] = beta
-        cache['eps'] = eps 
+        cache = (x_hat, gamma, beta, eps) 
         #######################################################################
         #                           END OF YOUR CODE                          #
         #######################################################################
@@ -211,10 +204,7 @@ def batchnorm_forward(x, gamma, beta, bn_param):
         #######################################################################
         x_hat = (x - running_mean) / np.sqrt(running_var)
         out = x_hat * gamma + beta
-        cache['out'] = out
-        cache['gamma'] = gamma
-        cache['beta'] = beta
-        cache['eps'] = eps 
+        cache = (x_hat, gamma, beta, eps) 
         #######################################################################
         #                          END OF YOUR CODE                           #
         #######################################################################
@@ -252,7 +242,12 @@ def batchnorm_backward(dout, cache):
     # Referencing the original paper (https://arxiv.org/abs/1502.03167)       #
     # might prove to be helpful.                                              #
     ###########################################################################
-    pass
+    x_hat, gamma, beta, eps = cache
+    N, D = dout.shape
+    dx_hat = 
+    #dbeta = 
+    #dgamma =
+    #dx =
     ###########################################################################
     #                             END OF YOUR CODE                            #
     ###########################################################################
