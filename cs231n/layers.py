@@ -245,8 +245,9 @@ def batchnorm_backward(dout, cache):
     x_hat, gamma, eps, mu, var = cache
     N, D = dout.shape
     dbeta = np.sum(dout, axis = 0)
-    dgamma = np.sum(x_hat*dout, axis = 0)
-    dx_hat = np.dot(dout, gamma)
+    dgamma = np.sum(x_hat * dout, axis = 0)
+    dx_hat = dout * gamma
+    #x_hat = (x-sample_mean)/np.sqrt(sample_var + eps)
     dx = dx_hat / np.sqrt(var + eps)
     ###########################################################################
     #                             END OF YOUR CODE                            #
